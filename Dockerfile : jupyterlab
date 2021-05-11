@@ -1,0 +1,49 @@
+FROM ubuntu:18.04
+
+​
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+ENV TZ=Asia/Seoul
+
+​
+
+RUN apt-get update -y
+
+RUN apt-get install tzdata -y
+
+RUN apt-get install curl vim -y
+
+
+
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash --
+
+RUN apt-get update
+
+RUN apt-get install nodejs -y
+
+RUN nodejs --version >> nodejs.version
+
+
+
+RUN apt-get install python3.8 python3-pip -y
+
+RUN apt-get install jupyter ipython -y
+
+RUN pip3 install ipython jupyter-core note jupyter jupyterlab
+
+RUN pip3 install --upgrade --force-reinstall --no-cache-dir jupyter
+
+RUN jupyter lab --generate-config
+
+
+
+RUN echo "c.NotebookApp.password = u'sha1:6a3f528eec40:6e896b6e4828f525a6e20e5411cd1c8075d68619'" >> /root/.jupyter/jupyter_notebook_config.py
+
+
+
+EXPOSE 8888
+
+
+
+ENTRYPOINT jupyter lab --allow-root --ip=0.0.0.0 --port=8888 --no-browser
